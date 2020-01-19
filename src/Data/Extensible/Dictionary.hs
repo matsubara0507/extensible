@@ -221,7 +221,7 @@ instance Forall (KeyTargetAre KnownSymbol (Instance1 J.FromJSON h)) xs => J.From
   parseJSON = J.withObject "Object" $ \v -> hgenerateFor
     (Proxy :: Proxy (KeyTargetAre KnownSymbol (Instance1 J.FromJSON h)))
     $ \m -> let k = symbolVal (proxyKeyOf m)
-      in fmap Field $ J.parseJSON $ maybe J.Null id $ HM.lookup (T.pack k) v
+      in fmap Field $ J.withEmbeddedJSON k J.parseJSON $ maybe J.Null id $ HM.lookup (T.pack k) v
 
 instance Forall (KeyTargetAre KnownSymbol (Instance1 J.ToJSON h)) xs => J.ToJSON (xs :& Field h) where
   toJSON = J.Object . hfoldlWithIndexFor
